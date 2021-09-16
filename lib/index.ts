@@ -40,6 +40,8 @@ export interface RedisAdapterOptions {
    * @default 5000
    */
   requestsTimeout: number;
+
+  customFetch: Function
 }
 
 /**
@@ -65,6 +67,8 @@ export class RedisAdapter extends Adapter {
   public readonly uid;
   public readonly requestsTimeout: number;
 
+  public customFetch: Function;
+
   private readonly channel: string;
   private readonly requestChannel: string;
   private readonly responseChannel: string;
@@ -87,6 +91,8 @@ export class RedisAdapter extends Adapter {
     opts: Partial<RedisAdapterOptions> = {}
   ) {
     super(nsp);
+
+    this.customFetch = opts.customFetch;
 
     this.uid = uid2(6);
     this.requestsTimeout = opts.requestsTimeout || 5000;
@@ -290,7 +296,7 @@ export class RedisAdapter extends Adapter {
 
         response = JSON.stringify({
           requestId: request.requestId,
-          sockets: localSockets.map((socket) => ({
+          sockets: localSockets.map(this.customFetch ? this.customFetch : (socket) => ({
             id: socket.id,
             handshake: socket.handshake,
             rooms: [...socket.rooms],
