@@ -41,7 +41,7 @@ export interface RedisAdapterOptions {
    */
   requestsTimeout: number;
 
-  customFetch: Function
+  customFetch: any
 }
 
 /**
@@ -67,7 +67,7 @@ export class RedisAdapter extends Adapter {
   public readonly uid;
   public readonly requestsTimeout: number;
 
-  public customFetch: Function;
+  public customFetch: any;
 
   private readonly channel: string;
   private readonly requestChannel: string;
